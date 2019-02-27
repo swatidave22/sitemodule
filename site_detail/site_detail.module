@@ -1,0 +1,36 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\ConfigFormBase;
+
+
+function site_detail_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+
+	if($form_id =='system_site_information_settings'){
+		$config = \Drupal::config('system.site');
+		$siteapikey = $config->get('siteapikey');
+		 if (empty($siteapikey)) {
+	      $siteapikey = 'No API Key yet';
+	    }else{
+	     $form['actions']['submit']['#value'] = t('Update configuration');
+	    }
+		$form['site_information']['siteapikey'] = [
+	      '#type' => 'textfield',
+	      '#title' => t('Site Api Key'),
+	      '#default_value' => $siteapikey,
+	     ];
+	     
+	// Add submit handler to save contact configuration.
+		$form['#submit'][] = 'site_detail_submit_Form';
+	}
+}
+ function site_detail_submit_Form($form, FormStateInterface $form_state) {
+    // Retrieve the configuration
+ 	if($form_state->getValue('siteapikey') != 'No API Key yet'){
+ 	   \Drupal::configFactory()->getEditable('system.site')
+      ->set('siteapikey', $form_state->getValue('siteapikey'))
+      ->save();
+
+		drupal_set_message(t('site api key hase been save as "@api"',['@api' => $form_state->getValue('siteapikey')]));
+	}
+  }

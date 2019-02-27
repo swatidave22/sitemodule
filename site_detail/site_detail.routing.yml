@@ -1,0 +1,8 @@
+site_detail.content:
+  path: '/page_json/{api_key}'
+  defaults:
+    _controller: 'Drupal\site_detail\Controller\siteDetailPageController::content'
+    _title: 'page content'
+  requirements:
+    _permission: 'access content'
+  
